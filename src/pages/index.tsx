@@ -1,6 +1,7 @@
-import { type NextPage } from "next";
 import Head from "next/head";
+import axios from "axios";
 import Link from "next/link";
+import { GetServerSideProps } from "next";
 
 import { api } from "@/utils/api";
 
@@ -51,5 +52,40 @@ const Home: NextPage = () => {
     </>
   );
 };
+
+export const getServerSideProps = async () => {
+  await invoke("createDeck", 6, { deck: "test1" });
+  const result = await invoke("deckNames", 6);
+  console.log(`got list of decks: ${result}`);
+  return {};
+};
+
+async function invoke(action, version, params = {}) {
+  try {
+    const response = await axios.post("http://127.0.0.1:8765", {
+      action,
+      version,
+      params,
+    });
+
+    const responseData = response.data;
+    if (Object.getOwnPropertyNames(responseData).length !== 2) {
+      throw new Error("response has an unexpected number of fields");
+    }
+    if (!responseData.hasOwnProperty("error")) {
+      throw new Error("response is missing required error field");
+    }
+    if (!responseData.hasOwnProperty("result")) {
+      throw new Error("response is missing required result field");
+    }
+    if (responseData.error) {
+      throw new Error(responseData.error);
+    }
+
+    return responseData.result;
+  } catch (error) {
+    throw error;
+  }
+}
 
 export default Home;
