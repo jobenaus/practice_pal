@@ -1,12 +1,59 @@
 import Head from "next/head";
-import axios from "axios";
 import Link from "next/link";
-import { GetServerSideProps } from "next";
+
+import { type AnkiConnectResponse } from "@/utils/types";
 
 import { api } from "@/utils/api";
+import { type NextPage } from "next";
+import { useEffect } from "react";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  useEffect(() => {
+    async function invoke(action: string, version: number, params = {}) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.addEventListener("error", () => reject("failed to issue request"));
+        xhr.addEventListener("load", () => {
+          try {
+            const response = JSON.parse(
+              xhr.responseText
+            ) as AnkiConnectResponse;
+            if (Object.getOwnPropertyNames(response).length != 2) {
+              throw "response has an unexpected number of fields";
+            }
+            if (!response.hasOwnProperty("error")) {
+              throw "response is missing required error field";
+            }
+            if (!response.hasOwnProperty("result")) {
+              throw "response is missing required result field";
+            }
+            if (response.error) {
+              throw response.error;
+            }
+            resolve(response.result);
+          } catch (e) {
+            reject(e);
+          }
+        });
+
+        xhr.open("POST", "http://127.0.0.1:8765");
+        xhr.send(JSON.stringify({ action, version, params }));
+      });
+    }
+
+    async function fetchData() {
+      try {
+        await invoke("createDeck", 6, { deck: "test1" });
+        const result = await invoke("deckNames", 6);
+        console.log("got list of decks: ", result);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    fetchData().catch((e) => console.error(e));
+  }, []);
 
   return (
     <>
@@ -52,40 +99,5 @@ const Home: NextPage = () => {
     </>
   );
 };
-
-export const getServerSideProps = async () => {
-  await invoke("createDeck", 6, { deck: "test1" });
-  const result = await invoke("deckNames", 6);
-  console.log(`got list of decks: ${result}`);
-  return {};
-};
-
-async function invoke(action, version, params = {}) {
-  try {
-    const response = await axios.post("http://127.0.0.1:8765", {
-      action,
-      version,
-      params,
-    });
-
-    const responseData = response.data;
-    if (Object.getOwnPropertyNames(responseData).length !== 2) {
-      throw new Error("response has an unexpected number of fields");
-    }
-    if (!responseData.hasOwnProperty("error")) {
-      throw new Error("response is missing required error field");
-    }
-    if (!responseData.hasOwnProperty("result")) {
-      throw new Error("response is missing required result field");
-    }
-    if (responseData.error) {
-      throw new Error(responseData.error);
-    }
-
-    return responseData.result;
-  } catch (error) {
-    throw error;
-  }
-}
 
 export default Home;
