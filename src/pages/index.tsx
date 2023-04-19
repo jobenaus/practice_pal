@@ -10,7 +10,13 @@ import { useEffect } from "react";
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
   useEffect(() => {
-    async function invoke(action: string, params = {}, version = 6) {
+    async function invoke(
+      action: string,
+      params: Record<string, unknown> = {},
+      version = 6
+    ) {
+      const EXPECTED_NUM_FIELDS = 2;
+      const ANKI_CONNECT_SERVER_URL = "http://127.0.0.1:8765";
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.addEventListener("error", () => reject("failed to issue request"));
@@ -19,17 +25,20 @@ const Home: NextPage = () => {
             const response = JSON.parse(
               xhr.responseText
             ) as AnkiConnectResponse;
-            if (Object.getOwnPropertyNames(response).length != 2) {
-              throw "response has an unexpected number of fields";
+            const numFields = Object.getOwnPropertyNames(response).length;
+            if (numFields != EXPECTED_NUM_FIELDS) {
+              throw new Error(
+                `Response has ${numFields} fields, expected ${EXPECTED_NUM_FIELDS}`
+              );
             }
             if (!response.hasOwnProperty("error")) {
-              throw "response is missing required error field";
+              throw new Error("response is missing required error field");
             }
             if (!response.hasOwnProperty("result")) {
-              throw "response is missing required result field";
+              throw new Error("response is missing required result field");
             }
             if (response.error) {
-              throw response.error;
+              throw new Error(response.error);
             }
             resolve(response.result);
           } catch (e) {
@@ -37,7 +46,7 @@ const Home: NextPage = () => {
           }
         });
 
-        xhr.open("POST", "http://127.0.0.1:8765");
+        xhr.open("POST", ANKI_CONNECT_SERVER_URL);
         xhr.send(JSON.stringify({ action, version, params }));
       });
     }
@@ -59,7 +68,7 @@ const Home: NextPage = () => {
         }
 
         await invoke("createDeck", { deck: "test1" });
-        const result = await invoke("deckNames", 6);
+        const result = await invoke("deckNames");
         console.log("got list of decks: ", result);
       } catch (e) {
         console.error(e);
