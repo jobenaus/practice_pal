@@ -17,38 +17,38 @@ const Home: NextPage = () => {
     ) {
       const EXPECTED_NUM_FIELDS = 2;
       const ANKI_CONNECT_SERVER_URL = "http://127.0.0.1:8765";
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.addEventListener("error", () => reject("failed to issue request"));
-        xhr.addEventListener("load", () => {
-          try {
-            const response = JSON.parse(
-              xhr.responseText
-            ) as AnkiConnectResponse;
-            const numFields = Object.getOwnPropertyNames(response).length;
-            if (numFields != EXPECTED_NUM_FIELDS) {
-              throw new Error(
-                `Response has ${numFields} fields, expected ${EXPECTED_NUM_FIELDS}`
-              );
-            }
-            if (!response.hasOwnProperty("error")) {
-              throw new Error("response is missing required error field");
-            }
-            if (!response.hasOwnProperty("result")) {
-              throw new Error("response is missing required result field");
-            }
-            if (response.error) {
-              throw new Error(response.error);
-            }
-            resolve(response.result);
-          } catch (e) {
-            reject(e);
-          }
-        });
 
-        xhr.open("POST", ANKI_CONNECT_SERVER_URL);
-        xhr.send(JSON.stringify({ action, version, params }));
+      const response = await fetch(ANKI_CONNECT_SERVER_URL, {
+        method: "POST",
+        body: JSON.stringify({ action, version, params }),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to issue request.");
+      }
+
+      const data = (await response.json()) as AnkiConnectResponse;
+
+      const numFields = Object.getOwnPropertyNames(data).length;
+      if (numFields !== EXPECTED_NUM_FIELDS) {
+        throw new Error(
+          `Response has ${numFields} fields, expected ${EXPECTED_NUM_FIELDS}`
+        );
+      }
+
+      if (!data.hasOwnProperty("error")) {
+        throw new Error("Response is missing required error field");
+      }
+
+      if (!data.hasOwnProperty("result")) {
+        throw new Error("Response is missing required result field");
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      return data.result;
     }
 
     async function fetchData() {
