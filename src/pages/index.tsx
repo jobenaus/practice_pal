@@ -10,7 +10,7 @@ import { useEffect } from "react";
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
   useEffect(() => {
-    async function invoke(action: string, version: number, params = {}) {
+    async function invoke(action: string, params = {}, version = 6) {
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.addEventListener("error", () => reject("failed to issue request"));
@@ -44,7 +44,21 @@ const Home: NextPage = () => {
 
     async function fetchData() {
       try {
-        await invoke("createDeck", 6, { deck: "test1" });
+        // Ask user for permission to update configuration
+        const userResponse = confirm(
+          "This action will update your AnkiConnect configuration to allow cross-origin requests from our web application. Do you want to continue?"
+        );
+        if (!userResponse) {
+          return;
+        }
+
+        // Request permission from AnkiConnect API
+        const permissionResponse = await invoke("requestPermission");
+        if (permissionResponse == "denied") {
+          throw new Error("AnkiConnect permission denied");
+        }
+
+        await invoke("createDeck", { deck: "test1" });
         const result = await invoke("deckNames", 6);
         console.log("got list of decks: ", result);
       } catch (e) {
