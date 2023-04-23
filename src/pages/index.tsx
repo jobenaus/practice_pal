@@ -30,16 +30,33 @@ const Home: NextPage = () => {
           </div>
           <div>
             <label
-              htmlFor="number of bars"
+              htmlFor="Deck Title"
+              className="block text-sm font-medium leading-6 text-white"
+            >
+              Deck Title
+            </label>
+            <div className="relative mt-2 rounded-md shadow-sm">
+              <input
+                type="text"
+                name="deck_title"
+                id="deck_title"
+                className="block w-96 rounded-md border-0 py-1.5 text-gray-950 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                placeholder="Klavier: Fly me to the Moon - Jonny May (Advanced)"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor="number_of_bars"
               className="block text-sm font-medium leading-6 text-white"
             >
               Number of bars
             </label>
             <div className="relative mt-2 rounded-md shadow-sm">
               <input
-                type="text"
-                name="price"
-                id="price"
+                type="number"
+                name="number_of_bars"
+                id="number_of_bars"
                 className="block w-16 rounded-md border-0 py-1.5 text-gray-950 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder="0"
               />
@@ -50,25 +67,5 @@ const Home: NextPage = () => {
     </>
   );
 };
-
-function Counter() {
-  const [count, setCount] = useState(0);
-
-  function increment() {
-    setCount(count + 1);
-  }
-
-  function decrement() {
-    setCount(count - 1);
-  }
-
-  return (
-    <div>
-      <h1>Counter: {count}</h1>
-      <button onClick={increment}>Increment</button>
-      <button onClick={decrement}>Decrement</button>
-    </div>
-  );
-}
 
 export default Home;
