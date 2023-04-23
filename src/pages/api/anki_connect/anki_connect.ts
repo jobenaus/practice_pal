@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 const EXPECTED_NUM_FIELDS = 2;
 const ANKI_CONNECT_SERVER_URL = "http://127.0.0.1:8765";
 
-async function invoke(
+export async function invoke(
   action: string,
   params: Record<string, unknown> = {},
   version = 6
@@ -46,7 +46,7 @@ async function invoke(
   return data.result;
 }
 
-async function invokeWithErrors(
+export async function invokeWithErrors(
   action: string,
   params: Record<string, unknown> = {},
   version = 6

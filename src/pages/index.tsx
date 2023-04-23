@@ -3,13 +3,14 @@ import toast, { Toaster } from "react-hot-toast";
 
 import { type NextPage } from "next";
 import { useState } from "react";
+import { invoke } from "./api/anki_connect/anki_connect";
 
 type FormData = {
   title: string;
   number_of_bars: number;
 };
 
-const handleSubmit = (formData: FormData) => {
+const handleSubmit = async (formData: FormData) => {
   toast(
     `Title: ${formData.title} \n Number of bars: ${formData.number_of_bars}`
   );
@@ -20,6 +21,14 @@ const handleSubmit = (formData: FormData) => {
   );
 
   console.log(cards);
+  try {
+    await invoke("createDeck", {
+      deck: formData.title,
+    });
+    toast(`Deck ${formData.title} created or already existed`);
+  } catch {
+    toast(`Something went wrong`);
+  }
 };
 
 const Home: NextPage = () => {
@@ -40,7 +49,9 @@ const Home: NextPage = () => {
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    handleSubmit(formData);
+    handleSubmit(formData).catch((error: Error) => {
+      toast(`Submit failed with error: ${error.message}`);
+    });
   };
 
   return (
