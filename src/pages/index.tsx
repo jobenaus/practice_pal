@@ -13,7 +13,13 @@ const handleSubmit = (formData: FormData) => {
   toast(
     `Title: ${formData.title} \n Number of bars: ${formData.number_of_bars}`
   );
-  console.log(formData);
+
+  const cards = Array.from(
+    { length: formData.number_of_bars - 1 },
+    (_, i) => `Takt ${i + 1}-${i + 2}`
+  );
+
+  console.log(cards);
 };
 
 const Home: NextPage = () => {
