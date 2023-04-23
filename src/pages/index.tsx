@@ -88,7 +88,10 @@ const Home: NextPage = () => {
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Practice Pal
           </h1>
-          <form onSubmit={handleFormSubmit}>
+          <form
+            onSubmit={handleFormSubmit}
+            className="grid grid-cols-1 gap-y-8"
+          >
             <div>
               <label
                 htmlFor="title"
@@ -126,13 +129,52 @@ const Home: NextPage = () => {
                   placeholder="0"
                 />
               </div>
-              <button
-                type="submit"
-                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Generate Deck
-              </button>
             </div>
+            <div className="relative flex gap-x-3">
+              <div className="flex h-6 items-center">
+                <input
+                  id="seperate_hands"
+                  name="seperate_hands"
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                />
+              </div>
+              <div className="text-sm leading-6">
+                <label
+                  htmlFor="seperate_hands"
+                  className="font-medium text-white"
+                >
+                  Seperate Hands
+                </label>
+                <p className="text-gray-400">
+                  At first you will learn the bars with seperate hands.
+                </p>
+              </div>
+            </div>
+            <div className="relative flex gap-x-3">
+              <div className="flex h-6 items-center">
+                <input
+                  id="single_bars"
+                  name="single_bars"
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                />
+              </div>
+              <div className="text-sm leading-6">
+                <label htmlFor="single_bars" className="font-medium text-white">
+                  Single Bars
+                </label>
+                <p className="text-gray-400">
+                  At first you will learn single bars and then in conjunction.
+                </p>
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Generate Deck
+            </button>
           </form>
         </div>
       </main>
