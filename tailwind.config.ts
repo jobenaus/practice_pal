@@ -1,12 +1,10 @@
 import { type Config } from "tailwindcss";
-import formPlugin from '@tailwindcss/forms'
+import formsPlugin from "@tailwindcss/forms";
 
 export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {},
   },
-  plugins: [
-    formPlugin
-  ],
+  plugins: [formsPlugin],
 } satisfies Config;
