@@ -1,4 +1,5 @@
 import { type AnkiConnectResponse } from "@/utils/types";
+import toast from "react-hot-toast";
 
 const EXPECTED_NUM_FIELDS = 2;
 const ANKI_CONNECT_SERVER_URL = "http://127.0.0.1:8765";
@@ -69,7 +70,11 @@ async function invokeWithErrors(
 }
 
 export function connectToAnki() {
+  const notify = () => toast("Here is your toast.");
   invokeWithErrors("deckNames")
     .then((result) => console.log("got list of decks: ", result))
-    .catch((e) => console.error("Connect To Anki: ", e));
+    .catch((e) => {
+      notify();
+      console.error("Connect To Anki: ", e);
+    });
 }
