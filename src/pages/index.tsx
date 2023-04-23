@@ -28,28 +28,55 @@ const handleSubmit = async (formData: FormData) => {
     toast(`Something went wrong`);
   }
 
-  const cards = Array.from(
-    { length: formData.number_of_bars - 1 },
-    (_, i) => `Takt ${i + 1}-${i + 2}`
-  );
+  let notes: string[] = [];
+
+  if (formData.single_bars) {
+    notes = [
+      ...notes,
+      ...Array.from({ length: formData.number_of_bars }, (_, i) => {
+        const base = `Takt ${i + 1}`;
+        if (formData.seperate_hands && formData.single_bars) {
+          return [`${base} (RH)`, `${base} (LH)`, base];
+        } else {
+          return base;
+        }
+      }).flat(),
+    ];
+  }
+
+  notes = [
+    ...notes,
+    ...Array.from({ length: formData.number_of_bars - 1 }, (_, i) => {
+      const base = `Takt ${i + 1}-${i + 2}`;
+      if (formData.seperate_hands && !formData.single_bars) {
+        return [`${base} (RH)`, `${base} (LH)`, base];
+      } else {
+        return base;
+      }
+    }).flat(),
+  ];
+  console.log(notes);
 
   try {
-    for (const card of cards) {
+    for (const note of notes) {
       try {
         await invoke("addNote", {
           note: {
             deckName: formData.title,
             modelName: "Basic",
-            fields: { Front: card, Back: "" },
+            fields: { Front: note, Back: "" },
+            options: {
+              duplicateScope: "deck",
+            },
           },
         });
       } catch (e) {
-        toast(`Failed to add card with the description: ${card}`);
+        toast(`Failed to add card with the description: ${note}`);
         throw e;
       }
     }
     toast(
-      `Succesfully Added ${cards.length} cards to the Deck ${formData.title}`
+      `Succesfully Added ${notes.length} cards to the Deck ${formData.title}`
     );
   } catch (e) {
     if (e instanceof Error) toast(e.message);
