@@ -30,7 +30,7 @@ const Home: NextPage = () => {
           </div>
           <div>
             <label
-              htmlFor="Deck Title"
+              htmlFor="deck-title"
               className="block text-sm font-medium leading-6 text-white"
             >
               Deck Title
@@ -38,8 +38,8 @@ const Home: NextPage = () => {
             <div className="relative mt-2 rounded-md shadow-sm">
               <input
                 type="text"
-                name="deck_title"
-                id="deck_title"
+                name="deck-title"
+                id="deck-title"
                 className="block w-96 rounded-md border-0 py-1.5 text-gray-950 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder="Klavier: Fly me to the Moon - Jonny May (Advanced)"
               />
@@ -47,7 +47,7 @@ const Home: NextPage = () => {
           </div>
           <div>
             <label
-              htmlFor="number_of_bars"
+              htmlFor="number-of-bars"
               className="block text-sm font-medium leading-6 text-white"
             >
               Number of bars
@@ -55,8 +55,8 @@ const Home: NextPage = () => {
             <div className="relative mt-2 rounded-md shadow-sm">
               <input
                 type="number"
-                name="number_of_bars"
-                id="number_of_bars"
+                name="number-of-bars"
+                id="number-of-bars"
                 className="block w-16 rounded-md border-0 py-1.5 text-gray-950 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder="0"
               />
