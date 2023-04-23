@@ -8,11 +8,15 @@ import { invoke } from "./api/anki_connect/anki_connect";
 type FormData = {
   title: string;
   number_of_bars: number;
+  seperate_hands: false;
+  single_bars: false;
 };
 
 const handleSubmit = async (formData: FormData) => {
   toast(
-    `Title: ${formData.title} \n Number of bars: ${formData.number_of_bars}`
+    `Title: ${formData.title} \n Number of bars: ${
+      formData.number_of_bars
+    } \n Seperate Hands: ${formData.seperate_hands.toString()} \n Single Bars: ${formData.single_bars.toString()}`
   );
 
   try {
@@ -58,14 +62,19 @@ const Home: NextPage = () => {
   const [formData, setFormData] = useState<FormData>({
     title: "",
     number_of_bars: 0,
+    seperate_hands: false,
+    single_bars: false,
   });
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
+    const target = event.target;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    const name = target.name;
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [name]: value,
-    });
+    }));
   };
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -136,6 +145,8 @@ const Home: NextPage = () => {
                   id="seperate_hands"
                   name="seperate_hands"
                   type="checkbox"
+                  onChange={handleInputChange}
+                  checked={formData.seperate_hands}
                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                 />
               </div>
@@ -157,6 +168,8 @@ const Home: NextPage = () => {
                   id="single_bars"
                   name="single_bars"
                   type="checkbox"
+                  onChange={handleInputChange}
+                  checked={formData.single_bars}
                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                 />
               </div>
