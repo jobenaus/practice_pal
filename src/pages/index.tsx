@@ -15,12 +15,6 @@ const handleSubmit = async (formData: FormData) => {
     `Title: ${formData.title} \n Number of bars: ${formData.number_of_bars}`
   );
 
-  const cards = Array.from(
-    { length: formData.number_of_bars - 1 },
-    (_, i) => `Takt ${i + 1}-${i + 2}`
-  );
-
-  console.log(cards);
   try {
     await invoke("createDeck", {
       deck: formData.title,
@@ -28,6 +22,33 @@ const handleSubmit = async (formData: FormData) => {
     toast(`Deck ${formData.title} created or already existed`);
   } catch {
     toast(`Something went wrong`);
+  }
+
+  const cards = Array.from(
+    { length: formData.number_of_bars - 1 },
+    (_, i) => `Takt ${i + 1}-${i + 2}`
+  );
+
+  try {
+    for (const card of cards) {
+      try {
+        await invoke("addNote", {
+          note: {
+            deckName: formData.title,
+            modelName: "Basic",
+            fields: { Front: card, Back: "" },
+          },
+        });
+      } catch (e) {
+        toast(`Failed to add card with the description: ${card}`);
+        throw e;
+      }
+    }
+    toast(
+      `Succesfully Added ${cards.length} cards to the Deck ${formData.title}`
+    );
+  } catch (e) {
+    if (e instanceof Error) toast(e.message);
   }
 };
 
