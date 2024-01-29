@@ -14,12 +14,14 @@ type FormData = {
 
 const handleSubmit = async (formData: FormData) => {
   toast(
-    `Title: ${formData.title} \n Number of bars: ${
-      formData.number_of_bars
+    `Title: ${formData.title} \n Number of bars: ${formData.number_of_bars
     } \n Seperate Hands: ${formData.seperate_hands.toString()} \n Single Bars: ${formData.single_bars.toString()}`
   );
 
   try {
+    console.log(await invoke("requestPermission"))
+    const modelNames = await invoke("modelNames") as [string]
+    console.log("modelNames ", modelNames)
     await invoke("createDeck", {
       deck: formData.title,
     });
