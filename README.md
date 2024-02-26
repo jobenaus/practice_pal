@@ -31,3 +31,11 @@ Afterwards, you can change the language back to "German" the following way:
 - Add the following URL to the "WebCorsOriginList": "https://practice-pal.vercel.app". It is important to not include the "/" at the end of the URL.
 ![](image5.png)
 - Restart Anki for the changes to take effect.
+
+## Usage
+1. Go to [https://practice-pal.vercel.app/](https://practice-pal.vercel.app/).
+2. Open Anki for PC/Mac/Linux with AnkiConnect installed.
+3. Enter a name for the Anki Deck you want to create.
+4. Enter the number of bars you want to practice.
+5. Press Generate Deck.
+6. Check if the Deck was created correctly.
